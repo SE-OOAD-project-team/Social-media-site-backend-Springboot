@@ -20,3 +20,7 @@ spring:
 ```bash
 ./gradlew bootRun
 ```
+or
+```bash
+./gradlew bootRun --args='--spring.profiles.active={PROFILE}'
+```
