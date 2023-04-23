@@ -1,11 +1,10 @@
 package com.example.SocialMedia.Controllers;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,39 +18,36 @@ import com.example.SocialMedia.Models.Post;
 import com.example.SocialMedia.Repositories.PostsRepository;
 
 @RestController
-@RequestMapping("/api/v2/post")
-public class PostController {
+@RequestMapping("api/v2/post/comments")
+public class Comments {
 	@Autowired
 	PostsRepository postsRepo;
 
-	@GetMapping("get/{id}")
-	public ResponseEntity<Post> getPost(@PathVariable("id") String id) {
-		Optional<Post> post = postsRepo.findById(id);
+	@GetMapping("get/{post_id}")
+	public ResponseEntity<List<Comment>> getComments(@PathVariable("post_id") String post_id) {
+		Optional<Post> post = postsRepo.findById(post_id);
 
 		if (post.isEmpty()) {
 			return ResponseEntity.notFound().build();
 		} else {
-			return ResponseEntity.ok(post.get());
+			return ResponseEntity.ok(post.get().comments);
 		}
 	}
 
-	@PostMapping(value = "create", consumes = "application/json")
-	public Post createPost(@RequestBody Post post) {
-		if (post.comments == null) {
-			post.comments = new ArrayList<Comment>();
+	@PostMapping("add/{post_id}")
+	public ResponseEntity<Void> addComment(@PathVariable("post_id") String post_id, @RequestBody Comment comment) {
+		Optional<Post> postOpt = postsRepo.findById(post_id);
+
+		if (postOpt.isEmpty()) {
+			return ResponseEntity.notFound().build();
+		} else {
+			Post post = postOpt.get();
+
+			post.comments.add(comment);
+			
+			post = postsRepo.save(post);
+
+			return ResponseEntity.status(HttpStatus.OK).build();
 		}
-		post.comments_count = post.comments.size();
-		post.likes_count = 0;
-
-		Post created = postsRepo.save(post);
-
-		return created;
-	}
-
-	@GetMapping("getallposts")
-	public List<String> getAllPosts() {
-		return postsRepo.findAll().stream().map((post) -> {
-			return post.id;
-		}).collect(Collectors.toList());
 	}
 }

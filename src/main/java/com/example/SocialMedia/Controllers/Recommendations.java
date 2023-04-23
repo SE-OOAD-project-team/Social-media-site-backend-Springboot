@@ -15,7 +15,7 @@ import com.example.SocialMedia.Repositories.PostsRepository;
 
 @RestController
 @RequestMapping("api/v2/recommendations")
-public class RecommendationController {
+public class Recommendations {
 	@Autowired
 	PostsRepository postsRepo;
 
