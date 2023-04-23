@@ -20,7 +20,7 @@ import com.example.SocialMedia.Repositories.PostsRepository;
 
 @RestController
 @RequestMapping("/api/v2/post")
-public class PostController {
+public class Posts {
 	@Autowired
 	PostsRepository postsRepo;
 
