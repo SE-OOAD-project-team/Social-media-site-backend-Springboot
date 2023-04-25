@@ -1,6 +1,7 @@
 package com.example.SocialMedia.Controllers;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -54,4 +55,30 @@ public class Posts {
 			return post.id;
 		}).collect(Collectors.toList());
 	}
+	
+	@PostMapping("inc-like")
+	public HashMap<String, String> incrementLike(@RequestBody HashMap<String, String> req) {
+		String username = req.get("username");
+		String post_id = req.get("post_id");
+		
+		HashMap<String, String> ret = new HashMap<>();
+		
+		Optional<Post> post_opt =postsRepo.findById(post_id);
+		if(post_opt.isPresent()) {
+			Post post = post_opt.get();
+			int curr_likes_count = post.likes_count;
+			post.likes_count = curr_likes_count + 1;
+			Post updated_post = postsRepo.save(post);
+			
+			if (updated_post.likes_count > curr_likes_count)
+				ret.put("status", "Success");
+			else
+				ret.put("status", "Failure");
+		}
+		else
+			ret.put("status", "Failure");
+		
+		return ret;
+	}
+
 }
