@@ -44,6 +44,7 @@ public class Comments {
 			Post post = postOpt.get();
 
 			post.comments.add(comment);
+			post.comments_count = post.comments.size();
 			
 			post = postsRepo.save(post);
 
