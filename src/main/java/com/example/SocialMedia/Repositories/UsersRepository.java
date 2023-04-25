@@ -1,5 +1,6 @@
 package com.example.SocialMedia.Repositories;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
@@ -13,5 +14,8 @@ public interface UsersRepository extends MongoRepository<User, String> {
 	
 	@Query("{username: '?0'}")
 	public Optional<User> findByUsername(String username);
+
+	@Query("{username: {$regex: '?0', $options: 'i'} }")
+	public List<User> searchForUser(String string);
 
 }
