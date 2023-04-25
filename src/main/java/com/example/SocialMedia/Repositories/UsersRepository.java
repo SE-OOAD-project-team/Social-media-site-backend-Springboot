@@ -1,17 +1,17 @@
 package com.example.SocialMedia.Repositories;
 
-import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.data.mongodb.repository.Query;
 import org.springframework.stereotype.Repository;
 
-import com.example.SocialMedia.Models.Post;
+import com.example.SocialMedia.Models.User;
 
 @Repository
-public interface PostsRepository extends MongoRepository<Post, String> {
+public interface UsersRepository extends MongoRepository<User, String> {
 	
 	@Query("{username: '?0'}")
-	public List<Post> findAllByUser(String username);
+	public Optional<User> findByUsername(String username);
 
 }
