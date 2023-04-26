@@ -3,6 +3,8 @@ config/*
 !/config/*-example.yml
 .DS_Store
 
+uploads/
+
 HELP.md
 .gradle
 build/

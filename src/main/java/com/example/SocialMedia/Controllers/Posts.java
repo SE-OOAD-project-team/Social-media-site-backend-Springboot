@@ -16,13 +16,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.SocialMedia.Models.Comment;
 import com.example.SocialMedia.Models.Post;
+import com.example.SocialMedia.Models.User;
 import com.example.SocialMedia.Repositories.PostsRepository;
+import com.example.SocialMedia.Repositories.UsersRepository;
 
 @RestController
 @RequestMapping("/api/v2/post")
 public class Posts {
 	@Autowired
 	PostsRepository postsRepo;
+	@Autowired
+	UsersRepository usersRepo;
 
 	@GetMapping("get/{id}")
 	public ResponseEntity<Post> getPost(@PathVariable("id") String id) {
@@ -44,6 +48,17 @@ public class Posts {
 		post.likes_count = 0;
 
 		Post created = postsRepo.save(post);
+
+		Optional<User> userOpt = usersRepo.findByUsername(post.username);
+		
+		if (userOpt.isPresent()) {
+			User user = userOpt.get();
+
+			user.posts.add(created.id);
+
+			user = usersRepo.save(user);
+		}
+
 
 		return created;
 	}
